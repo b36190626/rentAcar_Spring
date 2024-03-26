@@ -1,25 +1,41 @@
-package com.etiya.rentACar.core.entities;
+package com.etiya.rentacar.core.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @MappedSuperclass
+@Data
 public class BaseEntity {
+
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
     private int id;
-    @Column(name="createdDate")
+
+    @Column(name = "createdDate")
     private LocalDateTime createdDate;
-    @Column(name="updatedDate")
+
+    @Column(name = "updatedDate")
     private LocalDateTime updatedDate;
-    @Column(name="deletedDate")
+
+    @Column(name = "deletedDate")
     private LocalDateTime deletedDate;
+
+    @PrePersist
+    private void beforeAdd(){
+        createdDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void beforeUpdate(){
+        updatedDate = LocalDateTime.now();
+    }
+
+    @PreRemove
+    private void beforeDelete(){
+        deletedDate = LocalDateTime.now();
+    }
+
 }

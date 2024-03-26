@@ -1,6 +1,5 @@
-package com.etiya.rentACar.entities;
-
-import com.etiya.rentACar.core.entities.BaseEntity;
+package com.etiya.rentacar.entities;
+import com.etiya.rentacar.core.entities.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
 import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -18,7 +16,7 @@ import java.util.List;
 @Table(name="models")
 public class Model extends BaseEntity {
     @Column(name="name")
-    private String name; //BMW - 520 XDrive
+    private String name;
 
     @ManyToOne
     @JoinColumn(name="brandId")

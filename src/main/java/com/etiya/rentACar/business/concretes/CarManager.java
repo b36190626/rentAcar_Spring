@@ -1,56 +1,75 @@
-package com.etiya.rentACar.business.concretes;
+package com.etiya.rentacar.business.concretes;
 
-import com.etiya.rentACar.business.abstracts.BrandService;
-import com.etiya.rentACar.business.abstracts.CarService;
-import com.etiya.rentACar.business.dtos.requests.CreateBrandRequest;
-import com.etiya.rentACar.business.dtos.requests.CreateCarRequest;
-import com.etiya.rentACar.business.dtos.responses.CreatedBrandResponse;
-import com.etiya.rentACar.business.dtos.responses.GetAllBrandsResponse;
-import com.etiya.rentACar.business.dtos.responses.cars.CreatedCarResponse;
-import com.etiya.rentACar.business.dtos.responses.cars.GetAllCarsResponse;
-import com.etiya.rentACar.dataAccess.abstracts.BrandRepository;
-import com.etiya.rentACar.dataAccess.abstracts.CarRepository;
-import com.etiya.rentACar.entities.Car;
-import com.etiya.rentACar.entities.Model;
+import com.etiya.rentacar.business.abstracts.CarService;
+import com.etiya.rentacar.business.abstracts.ModelService;
+import com.etiya.rentacar.business.dtos.requests.car.CreateCarRequest;
+import com.etiya.rentacar.business.dtos.requests.car.UpdateCarRequest;
+import com.etiya.rentacar.business.dtos.responses.brand.GetBrandListResponse;
+import com.etiya.rentacar.business.dtos.responses.car.CreatedCarResponse;
+import com.etiya.rentacar.business.dtos.responses.car.GetCarListResponse;
+import com.etiya.rentacar.business.dtos.responses.car.GetCarResponse;
+import com.etiya.rentacar.business.dtos.responses.car.UpdatedCarResponse;
+import com.etiya.rentacar.core.utilities.mapping.ModelMapperService;
+import com.etiya.rentacar.dataAccess.abstracts.CarRepository;
+import com.etiya.rentacar.entities.Brand;
+import com.etiya.rentacar.entities.Car;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
-
+@AllArgsConstructor
 public class CarManager implements CarService {
-    private CarRepository carRepository;
 
+    private final CarRepository carRepository;
+    private final ModelService modelService;
+    private ModelMapperService modelMapperService;
 
     @Override
-    public CreatedCarResponse add(CreateCarRequest carRequest) {
-        Car car = new Car();
-        Model model = new Model();
-        model.setId(carRequest.getModelId());
-        car.setModelYear(carRequest.getModelYear());
-        car.setDailyPrice(carRequest.getDailyPrice());
-        car.setPlate(carRequest.getPlate());
-        car.setState(carRequest.getState());
-        car.setModel(model);
-        var createdCar = carRepository.save(car);
-        CreatedCarResponse createdCarResponse = new CreatedCarResponse();
-        createdCarResponse.setModelYear(createdCar.getModelYear());
-        createdCarResponse.setPlate(createdCar.getPlate());
-        createdCarResponse.setDailyPrice(createdCar.getDailyPrice());
-        createdCarResponse.setState(createdCar.getState());
-        createdCarResponse.setModelId(createdCar.getModel().getId());
+    public CreatedCarResponse add(CreateCarRequest createCarRequest) {
+        Car car = modelMapperService.forRequest().map(createCarRequest, Car.class);
+        car.setCreatedDate(LocalDateTime.now());
+        Car savedCar = carRepository.save(car);
+        return modelMapperService.forResponse().map(savedCar, CreatedCarResponse.class);
 
-        return createdCarResponse;
+
     }
 
     @Override
-    public List<GetAllCarsResponse> getAll() {
-        return null;
+    public UpdatedCarResponse update(UpdateCarRequest updateCarRequest) {
+        Car updatedCar = modelMapperService.forRequest().map(updateCarRequest, Car.class);
+        updatedCar.setUpdatedDate(LocalDateTime.now());
+        Car savedCar = carRepository.save(updatedCar);
+        return modelMapperService.forResponse().map(savedCar, UpdatedCarResponse.class);
+    }
+
+    @Override
+    public List<GetCarListResponse> getAll() {
+        List<Car> cars = carRepository.findAll();
+        return cars.stream().filter(car -> car.getDeletedDate() == null)
+                .map(car -> modelMapperService.forResponse()
+                        .map(car, GetCarListResponse.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public GetCarResponse getById(int id) {
+        Car car = findById(id);
+        return modelMapperService.forResponse().map(car, GetCarResponse.class);
+    }
+
+
+    @Override
+    public void delete(int id) {
+        Car car = findById(id);
+        car.setDeletedDate(LocalDateTime.now());
+        carRepository.save(car);
+
+    }
+
+    private Car findById(int id) {
+        return carRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Brand not found"));
     }
 }
-//Tüm entityler için Add,Update,Delete, GetAll,GetById operasyonlarını uçtan uca yazınız.
-//tamamında response-request pattern uygulanmalı
-
-//@Service, @Component, @Bean, @Repository anotasyonlarını detaylı araştırınız.IoC

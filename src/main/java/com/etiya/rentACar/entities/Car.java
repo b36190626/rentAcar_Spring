@@ -1,11 +1,9 @@
-package com.etiya.rentACar.entities;
-
-import com.etiya.rentACar.core.entities.BaseEntity;
+package com.etiya.rentacar.entities;
+import com.etiya.rentacar.core.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -23,4 +21,6 @@ public class Car extends BaseEntity {
     @ManyToOne()
     @JoinColumn(name="model_id")
     private Model model;
+    @Column(name="kilometer")
+    private double kilometer;
 }

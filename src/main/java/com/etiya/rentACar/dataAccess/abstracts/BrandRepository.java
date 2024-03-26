@@ -1,8 +1,7 @@
-package com.etiya.rentACar.dataAccess.abstracts;
+package com.etiya.rentacar.dataAccess.abstracts;
 
-import com.etiya.rentACar.entities.Brand;
+import com.etiya.rentacar.entities.Brand;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BrandRepository extends JpaRepository<Brand,Integer> {
+public interface BrandRepository extends JpaRepository<Brand, Integer> {
 }
-

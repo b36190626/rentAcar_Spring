@@ -1,55 +1,69 @@
-package com.etiya.rentACar.business.concretes;
+package com.etiya.rentacar.business.concretes;
 
-import com.etiya.rentACar.business.abstracts.BrandService;
-import com.etiya.rentACar.business.dtos.requests.CreateBrandRequest;
-import com.etiya.rentACar.business.dtos.responses.CreatedBrandResponse;
-import com.etiya.rentACar.business.dtos.responses.GetAllBrandsResponse;
-import com.etiya.rentACar.dataAccess.abstracts.BrandRepository;
-import com.etiya.rentACar.entities.Brand;
+import com.etiya.rentacar.business.abstracts.BrandService;
+import com.etiya.rentacar.business.dtos.requests.brand.CreateBrandRequest;
+import com.etiya.rentacar.business.dtos.requests.brand.UpdateBrandRequest;
+import com.etiya.rentacar.business.dtos.responses.brand.CreatedBrandResponse;
+import com.etiya.rentacar.business.dtos.responses.brand.GetBrandListResponse;
+import com.etiya.rentacar.business.dtos.responses.brand.GetBrandResponse;
+import com.etiya.rentacar.business.dtos.responses.brand.UpdatedBrandResponse;
+import com.etiya.rentacar.core.utilities.mapping.ModelMapperService;
+import com.etiya.rentacar.dataAccess.abstracts.BrandRepository;
+import com.etiya.rentacar.entities.Brand;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-
 public class BrandManager implements BrandService {
-    private BrandRepository brandRepository;
+    private final BrandRepository brandRepository;
+    private ModelMapperService modelMapperService;
 
     @Override
     public CreatedBrandResponse add(CreateBrandRequest createBrandRequest) {
-        //todo : Business rules
 
-        //mapping
-        Brand brand = new Brand();
-        brand.setName(createBrandRequest.getName());
+        Brand brand = modelMapperService.forRequest().map(createBrandRequest, Brand.class);
         brand.setCreatedDate(LocalDateTime.now());
+        Brand savedBrand = brandRepository.save(brand);
+        return modelMapperService.forResponse().map(savedBrand, CreatedBrandResponse.class);
 
-        Brand createdBrand =   this.brandRepository.save(brand);
-
-        //mapping
-        CreatedBrandResponse createdBrandResponse = new CreatedBrandResponse();
-        createdBrandResponse.setId(createdBrand.getId());
-        createdBrandResponse.setName(createdBrand.getName());
-        createdBrandResponse.setCreatedDate(createdBrand.getCreatedDate());
-
-        return createdBrandResponse;
     }
+
     @Override
-    public List<GetAllBrandsResponse> getAll(){
+    public UpdatedBrandResponse update(UpdateBrandRequest updateBrandRequest) {
+        Brand brand = findById(updateBrandRequest.getId());
+        brand.setName(updateBrandRequest.getName());
+        brand.setUpdatedDate(LocalDateTime.now());
+        Brand savedBrand = brandRepository.save(brand);
+        return modelMapperService.forResponse().map(savedBrand, UpdatedBrandResponse.class);
+    }
+
+    @Override
+    public List<GetBrandListResponse> getAll() {
         List<Brand> brands = brandRepository.findAll();
-        List<GetAllBrandsResponse> brandsResponse = new ArrayList<GetAllBrandsResponse>();
-        for (Brand brand : brands){
-        GetAllBrandsResponse responseItem = new GetAllBrandsResponse();
-        responseItem.setId(brand.getId());
-        }
-        return brandsResponse;
+        return brands.stream().filter(brand -> brand.getDeletedDate() == null).map(brand ->
+                modelMapperService.forResponse().map(brand, GetBrandListResponse.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public GetBrandResponse getById(int id) {
+        Brand brand = findById(id);
+        return modelMapperService.forResponse().map(brand, GetBrandResponse.class);
+    }
+
+
+    @Override
+    public void delete(int id) {
+        Brand brand = findById(id);
+        brand.setDeletedDate(LocalDateTime.now());
+        brandRepository.save(brand);
+    }
+
+    private Brand findById(int id) {
+        return brandRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Brand not found"));
     }
 }
-//Tüm entityler için Add,Update,Delete, GetAll,GetById operasyonlarını uçtan uca yazınız.
-//tamamında response-request pattern uygulanmalı
-
-//@Service, @Component, @Bean, @Repository anotasyonlarını detaylı araştırınız.IoC

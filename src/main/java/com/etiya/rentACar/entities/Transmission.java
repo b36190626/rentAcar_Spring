@@ -1,6 +1,6 @@
-package com.etiya.rentACar.entities;
+package com.etiya.rentacar.entities;
 
-import com.etiya.rentACar.core.entities.BaseEntity;
+import com.etiya.rentacar.core.entities.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -23,4 +23,3 @@ public class Transmission extends BaseEntity {
     @OneToMany(mappedBy = "transmission")
     private List<Model> models;
 }
-
