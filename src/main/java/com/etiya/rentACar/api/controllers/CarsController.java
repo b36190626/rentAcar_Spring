@@ -21,6 +21,7 @@ public class CarsController {
     private CarService carService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<GetCarListResponse> getAll() {
         return carService.getAll();
     }

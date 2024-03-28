@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreatedCarResponse {
-
+    private int rentalBranchId;
     private int id;
     private int modelYear;
     private String plate;

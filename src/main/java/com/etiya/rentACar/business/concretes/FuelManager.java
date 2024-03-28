@@ -8,6 +8,7 @@ import com.etiya.rentacar.business.dtos.responses.fuel.GetFuelListResponse;
 import com.etiya.rentacar.business.dtos.responses.fuel.GetFuelResponse;
 import com.etiya.rentacar.business.dtos.responses.fuel.UpdatedFuelResponse;
 import com.etiya.rentacar.business.dtos.responses.transmission.UpdatedTransmissionResponse;
+import com.etiya.rentacar.business.rules.FuelBusinessRules;
 import com.etiya.rentacar.core.utilities.mapping.ModelMapperService;
 import com.etiya.rentacar.dataAccess.abstracts.FuelRepository;
 import com.etiya.rentacar.entities.Fuel;
@@ -24,9 +25,12 @@ import java.util.stream.Collectors;
 public class FuelManager implements FuelService {
     private FuelRepository fuelRepository;
     private ModelMapperService modelMapperService;
+    private FuelBusinessRules fuelBusinessRules;
 
     @Override
     public CreatedFuelResponse add(CreateFuelRequest createFuelRequest) {
+        fuelBusinessRules.fuelNameCannotBeDuplicated(createFuelRequest.getName());
+
         Fuel fuel = modelMapperService.forResponse().map(createFuelRequest, Fuel.class);
         fuel.setCreatedDate(LocalDateTime.now());
         Fuel savedFuel = fuelRepository.save(fuel);
@@ -36,6 +40,7 @@ public class FuelManager implements FuelService {
 
     @Override
     public UpdatedFuelResponse update(UpdateFuelRequest updateFuelRequest) {
+        fuelBusinessRules.fuelIdIsExist(updateFuelRequest.getId());
         Fuel fuel = findById(updateFuelRequest.getId());
         fuel.setName(updateFuelRequest.getName());
         fuel.setUpdatedDate(LocalDateTime.now());
@@ -58,13 +63,15 @@ public class FuelManager implements FuelService {
 
     @Override
     public void delete(int id) {
+        fuelBusinessRules.fuelIdIsExist(id);
         Fuel fuel = findById(id);
         fuel.setDeletedDate(LocalDateTime.now());
         fuelRepository.save(fuel);
     }
 
     private Fuel findById(int id) {
-        return fuelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Brand not found"));
+        fuelBusinessRules.fuelIdIsExist(id);
+        return fuelRepository.findById(id).get();
     }
 
 }

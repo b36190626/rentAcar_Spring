@@ -15,5 +15,6 @@ public class CreateCarRequest {
     private double dailyPrice;
     private int modelId;
     private double kilometer;
+    private int rentalBranchId;
 
 }

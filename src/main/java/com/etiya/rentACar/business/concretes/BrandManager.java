@@ -7,6 +7,7 @@ import com.etiya.rentacar.business.dtos.responses.brand.CreatedBrandResponse;
 import com.etiya.rentacar.business.dtos.responses.brand.GetBrandListResponse;
 import com.etiya.rentacar.business.dtos.responses.brand.GetBrandResponse;
 import com.etiya.rentacar.business.dtos.responses.brand.UpdatedBrandResponse;
+import com.etiya.rentacar.business.rules.BrandBusinessRules;
 import com.etiya.rentacar.core.utilities.mapping.ModelMapperService;
 import com.etiya.rentacar.dataAccess.abstracts.BrandRepository;
 import com.etiya.rentacar.entities.Brand;
@@ -22,9 +23,11 @@ import java.util.stream.Collectors;
 public class BrandManager implements BrandService {
     private final BrandRepository brandRepository;
     private ModelMapperService modelMapperService;
+    private BrandBusinessRules brandBusinessRules;
 
     @Override
     public CreatedBrandResponse add(CreateBrandRequest createBrandRequest) {
+        brandBusinessRules.brandNameCannotBeDuplicated(createBrandRequest.getName());
 
         Brand brand = modelMapperService.forRequest().map(createBrandRequest, Brand.class);
         brand.setCreatedDate(LocalDateTime.now());
@@ -64,6 +67,7 @@ public class BrandManager implements BrandService {
     }
 
     private Brand findById(int id) {
-        return brandRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Brand not found"));
+        brandBusinessRules.brandIdIsExist(id);
+        return brandRepository.findById(id).get();
     }
 }

@@ -9,6 +9,7 @@ import com.etiya.rentacar.business.dtos.responses.car.CreatedCarResponse;
 import com.etiya.rentacar.business.dtos.responses.car.GetCarListResponse;
 import com.etiya.rentacar.business.dtos.responses.car.GetCarResponse;
 import com.etiya.rentacar.business.dtos.responses.car.UpdatedCarResponse;
+import com.etiya.rentacar.business.rules.CarBusinessRules;
 import com.etiya.rentacar.core.utilities.mapping.ModelMapperService;
 import com.etiya.rentacar.dataAccess.abstracts.CarRepository;
 import com.etiya.rentacar.entities.Brand;
@@ -25,8 +26,8 @@ import java.util.stream.Collectors;
 public class CarManager implements CarService {
 
     private final CarRepository carRepository;
-    private final ModelService modelService;
     private ModelMapperService modelMapperService;
+    private CarBusinessRules carBusinessRules;
 
     @Override
     public CreatedCarResponse add(CreateCarRequest createCarRequest) {
@@ -34,7 +35,6 @@ public class CarManager implements CarService {
         car.setCreatedDate(LocalDateTime.now());
         Car savedCar = carRepository.save(car);
         return modelMapperService.forResponse().map(savedCar, CreatedCarResponse.class);
-
 
     }
 
@@ -70,6 +70,7 @@ public class CarManager implements CarService {
     }
 
     private Car findById(int id) {
-        return carRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Brand not found"));
+        carBusinessRules.carIdIsExist(id);
+        return carRepository.findById(id).get();
     }
 }

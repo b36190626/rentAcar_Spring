@@ -74,6 +74,6 @@ public class ModelManager implements ModelService {
     }
 
     private Model findById(int id) {
-        return modelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Brand not found"));
+        return modelRepository.findById(id).get();
     }
 }

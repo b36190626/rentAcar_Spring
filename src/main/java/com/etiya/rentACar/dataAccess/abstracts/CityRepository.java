@@ -1,8 +1,7 @@
 package com.etiya.rentacar.dataAccess.abstracts;
 
-import com.etiya.rentacar.entities.Car;
+import com.etiya.rentacar.entities.City;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CarRepository extends JpaRepository<Car, Integer> {
-
+public interface CityRepository extends JpaRepository<City, Integer> {
 }
