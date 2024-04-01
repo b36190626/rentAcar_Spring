@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreatedRentalBranchResponse {
+
+    private String name;
     private int cityId;
+    private String cityName;
     private LocalDateTime createdDate;
+
 }

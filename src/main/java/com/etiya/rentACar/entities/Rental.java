@@ -13,25 +13,33 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name="rentals")
 public class Rental extends BaseEntity {
-    @Column(name = "rentDate")
-    private LocalDateTime rentDate;
-    @Column(name = "returnedDate")
-    private LocalDateTime returnDate;
-    @Column(name = "rentedKilometer")
-    private int rentedKilometer;
-    @Column(name = "returnedKilometer")
-    private int returnedKilometer;
+
+    @ManyToOne
+    @JoinColumn(name = "carId",nullable = false)
+    private Car car;
 
     @ManyToOne
     @JoinColumn(name = "customerId")
     private Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "carId")
-    private Car car;
+    @Column(name = "rentStartDate")
+    private LocalDateTime rentStartDate;
 
-    @ManyToOne
-    @JoinColumn(name = "rentalBranchId")
-    private RentalBranch rentalBranch;
+    @Column(name = "rentEndDate")
+    private LocalDateTime rentEndDate;
+
+    @Column(name = "returnDate")
+    private LocalDateTime returnDate;
+
+    @Column(name = "rentedKilometer")
+    private int rentedKilometer;
+
+    @Column(name = "returnedKilometer")
+    private int returnedKilometer;
+
+
+//    @ManyToOne
+//    @JoinColumn(name = "rentalBranchId")
+//    private RentalBranch rentalBranch;
 
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateTranmissionRequest {
-
+    private int id;
     private String name;
 
 }

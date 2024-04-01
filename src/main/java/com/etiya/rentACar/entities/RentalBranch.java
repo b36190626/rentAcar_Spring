@@ -23,6 +23,6 @@ public class RentalBranch extends BaseEntity {
     @OneToMany(mappedBy = "rentalBranch")
     private List<Car> cars;
 
-    @OneToMany(mappedBy = "rentalBranch")
-    private List<Rental> rentals;
+//    @OneToMany(mappedBy = "rentalBranch")
+//    private List<Rental> rentals;
 }

@@ -14,10 +14,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @MappedSuperclass
 public class User extends BaseEntity {
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "firstName")
+    private String firstName;
+
+    @Column(name = "lastName")
+    private String lastName;
+
     @Column(name = "email",unique = true)
     private String email;
 
     @Column(name = "password")
     private String password;
 
+    @Column(name = "companyName")
+    private String companyName;
 }

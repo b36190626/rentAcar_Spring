@@ -1,12 +1,16 @@
 package com.etiya.rentacar.core.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BaseEntity {
 
     @Id
@@ -28,10 +32,10 @@ public class BaseEntity {
         createdDate = LocalDateTime.now();
     }
 
-    @PreUpdate
-    private void onUpdate(){
-        updatedDate = LocalDateTime.now();
-    }
+//    @PreUpdate
+//    private void onUpdate(){
+//        updatedDate = LocalDateTime.now();
+//    }
 
     @PreRemove
     private void onDelete(){

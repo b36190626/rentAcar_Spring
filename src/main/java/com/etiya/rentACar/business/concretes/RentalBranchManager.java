@@ -10,11 +10,13 @@ import com.etiya.rentacar.business.dtos.responses.rentalBranch.UpdatedRentalBran
 import com.etiya.rentacar.core.utilities.mapping.ModelMapperService;
 import com.etiya.rentacar.dataAccess.abstracts.RentalBranchRepository;
 import com.etiya.rentacar.entities.RentalBranch;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class RentalBranchManager implements RentalBranchService {
     private RentalBranchRepository rentalBranchRepository;
     private ModelMapperService modelMapperService;

@@ -19,5 +19,7 @@ public interface CarService {
 
     void delete(int id);
 
+    void updateCarState(int carId, int state);
+
 
 }

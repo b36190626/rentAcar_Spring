@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 public class ModelManager implements ModelService {
 
     private ModelRepository modelRepository;
-    private FuelService fuelService;
-    private TransmissionService transmissionService;
-    private BrandService brandService;
     private ModelMapperService modelMapperService;
 
 
